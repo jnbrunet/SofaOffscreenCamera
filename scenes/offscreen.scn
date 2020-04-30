@@ -1,0 +1,13 @@
+<Node>
+    <RequiredPlugin name="SofaComponentAll"/>
+    <OffscreenCamera filepath="image1.png" position="2 2 21" lookAt="2 2 0" zNear="0.01" zFar="100" projectionType="1"/>
+    <OffscreenCamera filepath="image2.png" position="2 -15 10" lookAt="2 0 10" zNear="0.01" zFar="100" projectionType="1"/>
+<!--    <OffscreenCamera/>-->
+    <Node name="mechanics">
+        <VisualStyle displayFlags="showBehavior"/>
+        <RegularGridTopology name="grid" n="5 5 21" min="0 0 0" max="4 4 20"/>
+        <MechanicalObject name="mo" src="@grid" />
+        <HexahedronSetTopologyContainer name="container" src="@grid"/>
+        <HexahedronFEMForceField />
+    </Node>
+</Node>
