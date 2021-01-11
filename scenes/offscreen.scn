@@ -1,13 +1,24 @@
 <Node>
-    <RequiredPlugin name="SofaComponentAll"/>
-    <OffscreenCamera filepath="image1.png" position="2 2 21" lookAt="2 2 0" zNear="0.01" zFar="100" projectionType="1"/>
-    <OffscreenCamera filepath="image2.png" position="2 -15 10" lookAt="2 0 10" zNear="0.01" zFar="100" projectionType="1"/>
-<!--    <OffscreenCamera/>-->
-    <Node name="mechanics">
-        <VisualStyle displayFlags="showBehavior"/>
-        <RegularGridTopology name="grid" n="5 5 21" min="0 0 0" max="4 4 20"/>
-        <MechanicalObject name="mo" src="@grid" />
+    <RequiredPlugin pluginName='SofaOpenglVisual'/>
+    <RequiredPlugin pluginName='SofaBaseMechanics'/>
+    <RequiredPlugin pluginName='SofaSimpleFem'/>
+    <RequiredPlugin pluginName='SofaLoader'/>
+
+    <VisualStyle displayFlags="showBehavior showVisual"/>
+
+    <OffscreenCamera filepath="complete_scene.png" position="-20 0 0" lookAt="0 0 0" zNear="0.01" zFar="100" projectionType="1"/>
+
+    <Node name="Beam">
+        <OffscreenCamera filepath="only_beam.png" position="-20 0 0" lookAt="0 0 0" zNear="0.01" zFar="100" projectionType="1"/>
+        <RegularGridTopology name="grid" n="5 5 21" min="-2 -2 -10" max="2 2 10"/>
+        <MechanicalObject name="mo" src="@grid" showObject="1" showObjectScale="5"/>
         <HexahedronSetTopologyContainer name="container" src="@grid"/>
-        <HexahedronFEMForceField />
+        <HexahedronFEMForceField poissonRatio="0.45" youngModulus="5000"/>
+    </Node>
+
+    <Node name="Circle">
+        <OffscreenCamera filepath="only_circle.png" position="-20 0 0" lookAt="0 0 0" zNear="0.01" zFar="100" projectionType="1"/>
+        <MeshObjLoader name='loader' filename='mesh/ball.obj'/>
+        <OglModel src='@loader' color='red'/>
     </Node>
 </Node>

@@ -6,6 +6,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/VisualVisitor.h>
 
 OffscreenCamera::OffscreenCamera()
 : p_application(nullptr)
@@ -29,33 +30,32 @@ void OffscreenCamera::init() {
     format.setSamples(1);
     format.setRenderableType(QSurfaceFormat::OpenGL);
     format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
-    format.setProfile(QSurfaceFormat::CoreProfile);
+    format.setProfile(QSurfaceFormat::CompatibilityProfile);
+    format.setOption(QSurfaceFormat::DeprecatedFunctions, true);
+    format.setVersion(3, 2);
 
     p_surface = new QOffscreenSurface;
     p_surface->create();
 
     p_surface->setFormat(format);
 
-    QOpenGLContext * context;
-    if (QOpenGLContext::currentContext()) {
-        context = QOpenGLContext::currentContext();
-    } else {
-        p_context = new QOpenGLContext(p_surface);
-        context = p_context;
-        context->setFormat(format);
+    p_context = new QOpenGLContext(p_surface);
+    p_context->setFormat(format);
 
-        if (not context->create()) {
-            msg_error() << "Failed to create the OpenGL context";
-        }
-    }
-
-    QSurface * current_surface = context->surface();
-    if (not context->makeCurrent(p_surface)) {
-        msg_error() << "Failed to swap the surface of OpenGL context.";
+    if (not p_context->create()) {
+        msg_error() << "Failed to create the OpenGL context";
+        return;
     }
 
     Base::init();
     computeZ();
+
+    QOpenGLContext * current_context = QOpenGLContext::currentContext();
+    QSurface * current_surface = (current_context ? current_context->surface() : nullptr);
+    if (not p_context->makeCurrent(p_surface)) {
+        msg_error() << "Failed to swap the surface of OpenGL context.";
+        return;
+    }
 
     initGL();
 
@@ -64,13 +64,13 @@ void OffscreenCamera::init() {
         msg_error() << "Failed to bind the OpenGL framebuffer.";
     }
 
-    context->makeCurrent(current_surface);
+    if (current_context) {
+        current_context->makeCurrent(current_surface);
+    }
 }
 
 void OffscreenCamera::bwdInit() {
-    QCoreApplication::processEvents();
     auto image = grab_frame();
-    QCoreApplication::processEvents();
     const std::string &path = d_filepath.getValue();
     image.save(QString::fromStdString(path));
 }
@@ -81,15 +81,9 @@ QImage OffscreenCamera::grab_frame() {
                                  "init() method of the OffscreenCamera component?");
     }
 
-    QOpenGLContext * context;
-    if (QOpenGLContext::currentContext()) {
-        context = QOpenGLContext::currentContext();
-    } else {
-        context = p_context;
-    }
-
-    QSurface * current_surface = context->surface();
-    if (not context->makeCurrent(p_surface)) {
+    QOpenGLContext * current_context = QOpenGLContext::currentContext();
+    QSurface * current_surface = (current_context ? current_context->surface() : nullptr);
+    if (not p_context->makeCurrent(p_surface)) {
         msg_error() << "Failed to swap the surface of OpenGL context.";
     }
 
@@ -126,18 +120,54 @@ QImage OffscreenCamera::grab_frame() {
     glDisable(GL_COLOR_MATERIAL);
 
     auto * node = dynamic_cast<sofa::simulation::Node*>(getContext());
+    auto * root = dynamic_cast<sofa::simulation::Node*>(node->getRoot());
+    auto * vloop = node->getVisualLoop();
+
+    if (!p_textures_initialized) {
+        sofa::simulation::getSimulation()->initTextures(node);
+        p_textures_initialized = true;
+    }
 
     sofa::core::visual::QtDrawToolGL draw_tool;
     visual_parameters.drawTool() = &draw_tool;
     visual_parameters.setSupported(sofa::core::visual::API_OpenGL);
-    sofa::simulation::getSimulation()->draw(&visual_parameters, node);
+    visual_parameters.update();
+
+    auto root_visual_managers = root->visualManager;
+    for (auto * visual_manager : root_visual_managers) {
+        visual_manager->preDrawScene(&visual_parameters);
+    }
+    bool rendered = false; // true if a manager did the rendering
+    for (auto * visual_manager : root_visual_managers) {
+        rendered = visual_manager->drawScene(&visual_parameters);
+        if (rendered)
+            break;
+    }
+
+    if (!rendered) {
+        visual_parameters.pass() = sofa::core::visual::VisualParams::Std;
+        sofa::simulation::VisualDrawVisitor act ( &visual_parameters );
+        act.setTags(this->getTags());
+        node->execute ( &act );
+
+        visual_parameters.pass() = sofa::core::visual::VisualParams::Transparent;
+        sofa::simulation::VisualDrawVisitor act2 ( &visual_parameters );
+        act2.setTags(this->getTags());
+        node->execute ( &act2 );
+    }
+
+    for (auto visual_manager = root_visual_managers.rbegin(); visual_manager != root_visual_managers.rend(); ++visual_manager) {
+        (*visual_manager)->postDrawScene(&visual_parameters);
+    }
 
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_LIGHTING);
 
     QImage frame = p_framebuffer->toImage();
-    context->swapBuffers(p_surface);
-    context->makeCurrent(current_surface);
+    p_context->swapBuffers(p_surface);
+    if (current_context) {
+        current_context->makeCurrent(current_surface);
+    }
     return frame;
 }
 

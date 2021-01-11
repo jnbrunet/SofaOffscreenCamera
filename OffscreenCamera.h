@@ -35,4 +35,5 @@ private:
     QOffscreenSurface * p_surface;
     std::unique_ptr<QOpenGLFramebufferObject> p_framebuffer;
     QOpenGLContext * p_context;
+    bool p_textures_initialized = false;
 };
