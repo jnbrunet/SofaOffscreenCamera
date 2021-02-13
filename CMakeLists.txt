@@ -1,18 +1,31 @@
-cmake_minimum_required(VERSION 3.16)
-project(offscreen)
+cmake_minimum_required(VERSION 3.12)
+project(OffscreenCamera VERSION 20.12 LANGUAGES CXX)
+
+find_package(SofaBase REQUIRED) # Dependency to SofaBaseVisual
+find_package(Qt5 COMPONENTS Gui REQUIRED) # Dependency to Qt5::Gui
 
 set(SOURCE_FILES
-        init.cpp
-        OffscreenCamera.cpp
-        QtDrawToolGL.cpp)
+    src/OffscreenCamera/init.cpp
+    src/OffscreenCamera/OffscreenCamera.cpp
+    src/OffscreenCamera/QtDrawToolGL.cpp
+)
 
 set(HEADER_FILES
-        OffscreenCamera.h
-        QtDrawToolGL.h)
-
-find_package(Qt5 COMPONENTS Gui REQUIRED)
-find_package(SofaBase REQUIRED)
+    src/OffscreenCamera/OffscreenCamera.h
+    src/OffscreenCamera/QtDrawToolGL.h
+)
 
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
-target_link_libraries(offscreen Qt5::Gui GL SofaBaseVisual)
+
+target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Gui SofaBaseVisual)
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
+
+# Create package Config, Version & Target files.
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${PROJECT_VERSION}
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR ${PROJECT_NAME}
+    RELOCATABLE "plugins"
+)

@@ -39,8 +39,17 @@ void OffscreenCamera::init() {
 
     p_surface->setFormat(format);
 
+    // Store the previous context and surface if they exist
+    QOpenGLContext * previous_context = QOpenGLContext::currentContext();
+    QSurface * previous_surface = previous_context ? previous_context->surface() : nullptr;
+
+    // Create a new context
     p_context = new QOpenGLContext(p_surface);
     p_context->setFormat(format);
+
+    if (previous_context) {
+        p_context->setShareContext(previous_context);
+    }
 
     if (not p_context->create()) {
         msg_error() << "Failed to create the OpenGL context";
@@ -50,8 +59,6 @@ void OffscreenCamera::init() {
     Base::init();
     computeZ();
 
-    QOpenGLContext * current_context = QOpenGLContext::currentContext();
-    QSurface * current_surface = (current_context ? current_context->surface() : nullptr);
     if (not p_context->makeCurrent(p_surface)) {
         msg_error() << "Failed to swap the surface of OpenGL context.";
         return;
@@ -64,12 +71,14 @@ void OffscreenCamera::init() {
         msg_error() << "Failed to bind the OpenGL framebuffer.";
     }
 
-    if (current_context) {
-        current_context->makeCurrent(current_surface);
+    // Restore the previous surface
+    if (previous_context && previous_surface) {
+        previous_context->makeCurrent(previous_surface);
     }
 }
 
 void OffscreenCamera::bwdInit() {
+    msg_warning() << "Grabbing frame from " << this->getPathName();
     auto image = grab_frame();
     const std::string &path = d_filepath.getValue();
     image.save(QString::fromStdString(path));
@@ -81,8 +90,12 @@ QImage OffscreenCamera::grab_frame() {
                                  "init() method of the OffscreenCamera component?");
     }
 
-    QOpenGLContext * current_context = QOpenGLContext::currentContext();
-    QSurface * current_surface = (current_context ? current_context->surface() : nullptr);
+    if (! p_context) {
+        throw std::runtime_error("No OpenGL context. Have you run the init() method of the "
+                                 "OffscreenCamera component?");
+    }
+    auto * previous_context = QOpenGLContext::currentContext();
+    auto * previous_surface = previous_context->surface();
     if (not p_context->makeCurrent(p_surface)) {
         msg_error() << "Failed to swap the surface of OpenGL context.";
     }
@@ -121,7 +134,6 @@ QImage OffscreenCamera::grab_frame() {
 
     auto * node = dynamic_cast<sofa::simulation::Node*>(getContext());
     auto * root = dynamic_cast<sofa::simulation::Node*>(node->getRoot());
-    auto * vloop = node->getVisualLoop();
 
     if (!p_textures_initialized) {
         sofa::simulation::getSimulation()->initTextures(node);
@@ -165,8 +177,8 @@ QImage OffscreenCamera::grab_frame() {
 
     QImage frame = p_framebuffer->toImage();
     p_context->swapBuffers(p_surface);
-    if (current_context) {
-        current_context->makeCurrent(current_surface);
+    if (previous_context && previous_surface) {
+        previous_context->makeCurrent(previous_surface);
     }
     return frame;
 }

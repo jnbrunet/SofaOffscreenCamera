@@ -9,6 +9,7 @@
     <OffscreenCamera filepath="complete_scene.png" position="-20 0 0" lookAt="0 0 0" zNear="0.01" zFar="100" projectionType="1"/>
 
     <Node name="Beam">
+        <VisualStyle displayFlags="showBehavior"/>
         <OffscreenCamera filepath="only_beam.png" position="-20 0 0" lookAt="0 0 0" zNear="0.01" zFar="100" projectionType="1"/>
         <RegularGridTopology name="grid" n="5 5 21" min="-2 -2 -10" max="2 2 10"/>
         <MechanicalObject name="mo" src="@grid" showObject="1" showObjectScale="5"/>
@@ -17,6 +18,7 @@
     </Node>
 
     <Node name="Circle">
+        <VisualStyle displayFlags="showVisual"/>
         <OffscreenCamera filepath="only_circle.png" position="-20 0 0" lookAt="0 0 0" zNear="0.01" zFar="100" projectionType="1"/>
         <MeshObjLoader name='loader' filename='mesh/ball.obj'/>
         <OglModel src='@loader' color='red'/>
