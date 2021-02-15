@@ -1,26 +1,42 @@
-<Node>
+<Node dt="1">
     <RequiredPlugin pluginName='SofaOpenglVisual'/>
     <RequiredPlugin pluginName='SofaBaseMechanics'/>
     <RequiredPlugin pluginName='SofaSimpleFem'/>
     <RequiredPlugin pluginName='SofaLoader'/>
+    <RequiredPlugin pluginName='SofaEngine'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
+    <RequiredPlugin pluginName='SofaSparseSolver'/>
 
     <VisualStyle displayFlags="showBehavior showVisual"/>
 
-    <OffscreenCamera filepath="complete_scene.png" position="-20 0 0" lookAt="0 0 0" zNear="0.01" zFar="100" projectionType="1"/>
-
     <Node name="Beam">
         <VisualStyle displayFlags="showBehavior"/>
-        <OffscreenCamera filepath="only_beam.png" position="-20 0 0" lookAt="0 0 0" zNear="0.01" zFar="100" projectionType="1"/>
+
+        <StaticSolver newton_iterations="10" />
+        <SparseLDLSolver />
+
         <RegularGridTopology name="grid" n="5 5 21" min="-2 -2 -10" max="2 2 10"/>
         <MechanicalObject name="mo" src="@grid" showObject="1" showObjectScale="5"/>
         <HexahedronSetTopologyContainer name="container" src="@grid"/>
         <HexahedronFEMForceField poissonRatio="0.45" youngModulus="5000"/>
-    </Node>
 
-    <Node name="Circle">
-        <VisualStyle displayFlags="showVisual"/>
-        <OffscreenCamera filepath="only_circle.png" position="-20 0 0" lookAt="0 0 0" zNear="0.01" zFar="100" projectionType="1"/>
-        <MeshObjLoader name='loader' filename='mesh/ball.obj'/>
-        <OglModel src='@loader' color='red'/>
+        <BoxROI box="-2 -2 -10.1 2 2 -9.9" drawBoxes="true" name="fixed_face"/>
+        <FixedConstraint indices="@fixed_face.indices" />
+
+        <BoxROI box="-2 -2 9.9 2 2 10.1" drawBoxes="true" name="traction_face"/>
+        <LinearForceField points="@traction_face.indices" times="0 4" forces="0 -1 0 0 -10 0" />
+
+        <OffscreenCamera name="beam_and_circle_front" filepath="camera_%s_%i.png" save_frame_before_first_step="true" save_frame_after_each_n_steps="5" position="0 0 20" lookAt="0 0 0" zNear="0.01" zFar="100" projectionType="1"/>
+        <OffscreenCamera name="beam_and_circle_side"  filepath="camera_%s_%i.png" save_frame_before_first_step="true" save_frame_after_each_n_steps="5" position="-20 0 0" lookAt="0 0 0" zNear="0.01" zFar="100" projectionType="1"/>
+
+        <Node name="Circle">
+            <VisualStyle displayFlags="showVisual"/>
+            <OffscreenCamera name="only_circle_front" filepath="camera_%s_%i.png" save_frame_before_first_step="true" save_frame_after_each_n_steps="5" position="0 0 20" lookAt="0 0 0" zNear="0.01" zFar="100" projectionType="1"/>
+            <OffscreenCamera name="only_circle_side"  filepath="camera_%s_%i.png" save_frame_before_first_step="true" save_frame_after_each_n_steps="5" position="-20 0 0" lookAt="0 0 0" zNear="0.01" zFar="100" projectionType="1"/>
+            <MeshObjLoader name='loader' filename='mesh/ball.obj' translation="0 0 9" />
+            <OglModel src='@loader' color='red'/>
+            <BarycentricMapping />
+        </Node>
     </Node>
 </Node>

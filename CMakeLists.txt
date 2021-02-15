@@ -1,6 +1,14 @@
 cmake_minimum_required(VERSION 3.12)
 project(OffscreenCamera VERSION 20.12 LANGUAGES CXX)
 
+# Detect if this is a subproject of SOFA
+if ("${CMAKE_PROJECT_NAME}" STREQUAL "Sofa")
+    set(COMPILED_AS_SOFA_SUBPROJECT 1)
+    message(STATUS "${PROJECT_NAME} is compiled as a subproject to SOFA.")
+elseif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    set(CMAKE_INSTALL_PREFIX "install")
+endif ()
+
 find_package(SofaBase REQUIRED) # Dependency to SofaBaseVisual
 find_package(Qt5 COMPONENTS Gui REQUIRED) # Dependency to Qt5::Gui
 
@@ -27,5 +35,6 @@ sofa_create_package_with_targets(
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR ${PROJECT_NAME}
+    EXAMPLE_INSTALL_DIR "share/examples"
     RELOCATABLE "plugins"
 )

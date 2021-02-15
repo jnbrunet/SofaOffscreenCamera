@@ -2,15 +2,40 @@
 #include "QtDrawToolGL.h"
 
 #include <memory>
+#include <utility>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/VisualVisitor.h>
 
+#include <sofa/simulation/events/SimulationInitDoneEvent.h>
+#include <sofa/simulation/AnimateEndEvent.h>
+
 OffscreenCamera::OffscreenCamera()
 : p_application(nullptr)
-, d_filepath(initData(&d_filepath, "filepath", "Path of the image file."))
+, d_filepath(initData(&d_filepath,
+    std::string("screenshot_%s_%i.jpg"),
+    "filepath",
+    "Path of the image file. The special character set '%s' and '%i' can be used in the file name to specify the camera "
+    "name and the step number, respectively. Note that the step number will be 0 before the first step of the simulation, "
+    "and i after the ith step has been simulated.",
+    true  /*is_displayed_in_gui*/,
+    false /*is_read_only*/ ))
+, d_save_frame_before_first_step(initData(&d_save_frame_before_first_step,
+    false,
+    "save_frame_before_first_step",
+    "Render the frame once the scene has been initialized completely (before even starting the first step) "
+    "and save it into 'filepath'. Default to false",
+    true  /*is_displayed_in_gui*/,
+    false /*is_read_only*/ ))
+, d_save_frame_after_each_n_steps(initData(&d_save_frame_after_each_n_steps,
+    static_cast<unsigned int> (0),
+    "save_frame_after_each_n_steps",
+    "Render the frame after every N steps and save it into 'filepath'. Set to zero to disable."
+    "Default to 0",
+    true  /*is_displayed_in_gui*/,
+    false /*is_read_only*/ ))
 {
     if (! QCoreApplication::instance()) {
         // In case we are not inside a Qt application (such as with SofaQt),
@@ -36,8 +61,8 @@ void OffscreenCamera::init() {
 
     p_surface = new QOffscreenSurface;
     p_surface->create();
-
     p_surface->setFormat(format);
+    msg_info() << "Offscreen surface created.";
 
     // Store the previous context and surface if they exist
     QOpenGLContext * previous_context = QOpenGLContext::currentContext();
@@ -49,12 +74,14 @@ void OffscreenCamera::init() {
 
     if (previous_context) {
         p_context->setShareContext(previous_context);
+        msg_info() << "An OpenGl context already existed. Let's share it.";
     }
 
     if (not p_context->create()) {
         msg_error() << "Failed to create the OpenGL context";
         return;
     }
+    msg_info() << "A new OpenGl context has been created.";
 
     Base::init();
     computeZ();
@@ -63,6 +90,7 @@ void OffscreenCamera::init() {
         msg_error() << "Failed to swap the surface of OpenGL context.";
         return;
     }
+    msg_info() << "This new OpenGl context is now the current context.";
 
     initGL();
 
@@ -70,18 +98,12 @@ void OffscreenCamera::init() {
     if (not p_framebuffer->bind()) {
         msg_error() << "Failed to bind the OpenGL framebuffer.";
     }
+    msg_info() << "Framebuffer created and attached to the context.";
 
     // Restore the previous surface
     if (previous_context && previous_surface) {
         previous_context->makeCurrent(previous_surface);
     }
-}
-
-void OffscreenCamera::bwdInit() {
-    msg_warning() << "Grabbing frame from " << this->getPathName();
-    auto image = grab_frame();
-    const std::string &path = d_filepath.getValue();
-    image.save(QString::fromStdString(path));
 }
 
 QImage OffscreenCamera::grab_frame() {
@@ -224,6 +246,51 @@ void OffscreenCamera::initGL() {
     // Turn on our light and enable color along with the light
     //glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
+}
+
+void OffscreenCamera::save_frame(const std::string &filepath) {
+    QImage frame = grab_frame();
+    frame.save(QString::fromStdString(filepath));
+}
+
+void OffscreenCamera::handleEvent(sofa::core::objectmodel::Event * ev) {
+    using SimulationInitDoneEvent= sofa::simulation::SimulationInitDoneEvent;
+    using AnimateEndEvent= sofa::simulation::AnimateEndEvent;
+
+    BaseCamera::handleEvent( ev );
+
+    const auto & save_frame_before_first_step = d_save_frame_before_first_step.getValue();
+    const auto & save_frame_after_each_n_steps = d_save_frame_after_each_n_steps.getValue();
+
+    if (SimulationInitDoneEvent::checkEventType(ev) && d_save_frame_before_first_step.getValue()) {
+        const auto & filepath = parse_file_path();
+        save_frame(filepath);
+    } else if (AnimateEndEvent::checkEventType(ev)) {
+        ++p_step_number;
+
+        if (save_frame_after_each_n_steps > 0 && (p_step_number % save_frame_after_each_n_steps) == 0) {
+            const auto & filepath = parse_file_path();
+            save_frame(filepath);
+        }
+    }
+}
+
+std::string OffscreenCamera::parse_file_path() const {
+    std::string filepath = d_filepath.getValue();
+
+    std::vector<std::pair<std::string, std::string>> keys = {
+            {"%s", this->getName()},
+            {"%i", std::to_string(p_step_number)}
+    };
+    for (const auto & k : keys) {
+        size_t start_pos = 0;
+        while((start_pos = filepath.find(k.first, start_pos)) != std::string::npos) {
+            filepath.replace(start_pos, k.first.length(), k.second);
+            start_pos += k.second.length();
+        }
+    }
+
+    return filepath;
 }
 
 int OffscreenCameraClass = sofa::core::RegisterObject("Offscreen rendering camera.")
