@@ -11,21 +11,24 @@ endif ()
 
 find_package(SofaBase REQUIRED) # Dependency to SofaBaseVisual
 find_package(Qt5 COMPONENTS Gui REQUIRED) # Dependency to Qt5::Gui
+find_package(GLEW QUIET REQUIRED)
 
 set(SOURCE_FILES
     src/OffscreenCamera/init.cpp
     src/OffscreenCamera/OffscreenCamera.cpp
+    src/OffscreenCamera/GlewProxy.cpp
     src/OffscreenCamera/QtDrawToolGL.cpp
 )
 
 set(HEADER_FILES
     src/OffscreenCamera/OffscreenCamera.h
+    src/OffscreenCamera/GlewProxy.h
     src/OffscreenCamera/QtDrawToolGL.h
 )
 
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
 
-target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Gui SofaBaseVisual)
+target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Gui SofaBaseVisual GLEW::GLEW)
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 
 # Create package Config, Version & Target files.

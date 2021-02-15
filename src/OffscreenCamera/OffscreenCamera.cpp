@@ -1,3 +1,4 @@
+#include "GlewProxy.h"
 #include "OffscreenCamera.h"
 #include "QtDrawToolGL.h"
 
@@ -99,6 +100,7 @@ void OffscreenCamera::init() {
         msg_error() << "Failed to bind the OpenGL framebuffer.";
     }
 
+    GlewProxy::init();
     initGL();
 
     p_framebuffer->release();

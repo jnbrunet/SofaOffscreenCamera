@@ -8,8 +8,7 @@ required_plugins = [
 
 
 def createScene(root):
-    for p in required_plugins:
-        root.addObject('RequiredPlugin', name=p)
+    root.addObject('RequiredPlugin', pluginName=required_plugins)
 
     root.dt = 1
     root.addObject('VisualStyle', displayFlags='showBehavior showVisual')
@@ -17,8 +16,8 @@ def createScene(root):
 
     # Camera
     root.beam.addObject('OffscreenCamera',
-                        name='camera_beam_and_circle',
-                        filepath='/home/jnbrunet/sources/offscreen/%s_%i.png',
+                        name='camera_beam_and_ball',
+                        filepath='%s_%i.png',
                         save_frame_before_first_step=True,
                         save_frame_after_each_n_steps=5,
                         position=[0, 0, 20], lookAt=[0, 0, 0], zNear=0.01, zFar=100, projectionType=1, printLog=True)
@@ -56,17 +55,7 @@ if __name__ == "__main__":
     root = Sofa.Core.Node()
     createScene(root)
     Sofa.Simulation.init(root)
-    # Sofa.SofaGL.glewInit()
-    Sofa.Simulation.initVisual(root)
     Sofa.Simulation.initTextures(root)
     for _ in range(5):
         Sofa.Simulation.animate(root, 1)
         Sofa.Simulation.updateVisual(root)
-
-    # import Sofa.Gui
-    # Sofa.Gui.GUIManager.Init("myscene", "qglviewer")
-    # Sofa.Gui.GUIManager.createGUI(root, __file__)
-    # Sofa.Gui.GUIManager.SetDimension(1080, 1080)
-    # # Initialization of the scene will be done here
-    # Sofa.Gui.GUIManager.MainLoop(root)
-    # Sofa.Gui.GUIManager.closeGUI()
