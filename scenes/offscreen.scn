@@ -7,6 +7,7 @@
     <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
     <RequiredPlugin pluginName='SofaBoundaryCondition'/>
     <RequiredPlugin pluginName='SofaSparseSolver'/>
+    <RequiredPlugin pluginName='OffscreenCamera'/>
 
     <VisualStyle displayFlags="showBehavior showVisual"/>
 
@@ -27,13 +28,13 @@
         <BoxROI box="-2 -2 9.9 2 2 10.1" drawBoxes="true" name="traction_face"/>
         <LinearForceField points="@traction_face.indices" times="0 4" forces="0 -1 0 0 -10 0" />
 
-        <OffscreenCamera name="beam_and_circle_front" filepath="camera_%s_%i.png" save_frame_before_first_step="true" save_frame_after_each_n_steps="5" position="0 0 20" lookAt="0 0 0" zNear="0.01" zFar="100" projectionType="1"/>
-        <OffscreenCamera name="beam_and_circle_side"  filepath="camera_%s_%i.png" save_frame_before_first_step="true" save_frame_after_each_n_steps="5" position="-20 0 0" lookAt="0 0 0" zNear="0.01" zFar="100" projectionType="1"/>
+        <OffscreenCamera name="beam_and_ball_front" filepath="camera_%s_%i.png" save_frame_before_first_step="true" save_frame_after_each_n_steps="5" position="0 0 20" lookAt="0 0 0" zNear="0.01" zFar="100" projectionType="1"/>
+        <OffscreenCamera name="beam_and_ball_side"  filepath="camera_%s_%i.png" save_frame_before_first_step="true" save_frame_after_each_n_steps="5" position="-20 0 0" lookAt="0 0 0" zNear="0.01" zFar="100" projectionType="1"/>
 
-        <Node name="Circle">
+        <Node name="Ball">
             <VisualStyle displayFlags="showVisual"/>
-            <OffscreenCamera name="only_circle_front" filepath="camera_%s_%i.png" save_frame_before_first_step="true" save_frame_after_each_n_steps="5" position="0 0 20" lookAt="0 0 0" zNear="0.01" zFar="100" projectionType="1"/>
-            <OffscreenCamera name="only_circle_side"  filepath="camera_%s_%i.png" save_frame_before_first_step="true" save_frame_after_each_n_steps="5" position="-20 0 0" lookAt="0 0 0" zNear="0.01" zFar="100" projectionType="1"/>
+            <OffscreenCamera name="only_ball_front" filepath="camera_%s_%i.png" save_frame_before_first_step="true" save_frame_after_each_n_steps="5" position="0 0 20" lookAt="0 0 0" zNear="0.01" zFar="100" projectionType="1"/>
+            <OffscreenCamera name="only_ball_side"  filepath="camera_%s_%i.png" save_frame_before_first_step="true" save_frame_after_each_n_steps="5" position="-20 0 0" lookAt="0 0 0" zNear="0.01" zFar="100" projectionType="1"/>
             <MeshObjLoader name='loader' filename='mesh/ball.obj' translation="0 0 9" />
             <OglModel src='@loader' color='red'/>
             <BarycentricMapping />

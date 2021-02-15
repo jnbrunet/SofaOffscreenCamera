@@ -49,7 +49,6 @@ private:
     unsigned int p_step_number = 0;
     std::unique_ptr<QGuiApplication> p_application;
     QOffscreenSurface * p_surface{};
-    std::unique_ptr<QOpenGLFramebufferObject> p_framebuffer;
+    QOpenGLFramebufferObject * p_framebuffer;
     QOpenGLContext * p_context{};
-    bool p_textures_initialized = false;
 };

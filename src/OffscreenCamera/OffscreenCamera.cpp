@@ -9,7 +9,7 @@
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/VisualVisitor.h>
 
-#include <sofa/simulation/events/SimulationInitDoneEvent.h>
+#include <sofa/simulation/events/SimulationInitTexturesDoneEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 
 OffscreenCamera::OffscreenCamera()
@@ -92,13 +92,16 @@ void OffscreenCamera::init() {
     }
     msg_info() << "This new OpenGl context is now the current context.";
 
-    initGL();
+    p_framebuffer = new QOpenGLFramebufferObject(width, height, GL_TEXTURE_2D);
+    msg_info() << "Framebuffer created.";
 
-    p_framebuffer = std::make_unique<QOpenGLFramebufferObject>(width, height, GL_TEXTURE_2D);
     if (not p_framebuffer->bind()) {
         msg_error() << "Failed to bind the OpenGL framebuffer.";
     }
-    msg_info() << "Framebuffer created and attached to the context.";
+
+    initGL();
+
+    p_framebuffer->release();
 
     // Restore the previous surface
     if (previous_context && previous_surface) {
@@ -117,14 +120,17 @@ QImage OffscreenCamera::grab_frame() {
                                  "OffscreenCamera component?");
     }
     auto * previous_context = QOpenGLContext::currentContext();
-    auto * previous_surface = previous_context->surface();
+    auto * previous_surface = previous_context ? previous_context->surface() : nullptr;
     if (not p_context->makeCurrent(p_surface)) {
-        msg_error() << "Failed to swap the surface of OpenGL context.";
+        throw std::runtime_error("Failed to swap the surface of OpenGL context.");
+    }
+
+    if (not p_framebuffer->bind()) {
+        throw std::runtime_error("Failed to bind the OpenGL framebuffer.");
     }
 
     const auto & width = p_framebuffer->width();
     const auto & height = p_framebuffer->height();
-
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClearDepth(1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -156,11 +162,6 @@ QImage OffscreenCamera::grab_frame() {
 
     auto * node = dynamic_cast<sofa::simulation::Node*>(getContext());
     auto * root = dynamic_cast<sofa::simulation::Node*>(node->getRoot());
-
-    if (!p_textures_initialized) {
-        sofa::simulation::getSimulation()->initTextures(node);
-        p_textures_initialized = true;
-    }
 
     sofa::core::visual::QtDrawToolGL draw_tool;
     visual_parameters.drawTool() = &draw_tool;
@@ -202,6 +203,11 @@ QImage OffscreenCamera::grab_frame() {
     if (previous_context && previous_surface) {
         previous_context->makeCurrent(previous_surface);
     }
+
+    if (not p_framebuffer->release()) {
+        throw std::runtime_error("Failed to release the OpenGL framebuffer.");
+    }
+
     return frame;
 }
 
@@ -244,17 +250,18 @@ void OffscreenCamera::initGL() {
     glEnableClientState(GL_VERTEX_ARRAY);
 
     // Turn on our light and enable color along with the light
-    //glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
 }
 
 void OffscreenCamera::save_frame(const std::string &filepath) {
     QImage frame = grab_frame();
     frame.save(QString::fromStdString(filepath));
+    msg_info() << "Frame saved at " << filepath;
 }
 
 void OffscreenCamera::handleEvent(sofa::core::objectmodel::Event * ev) {
-    using SimulationInitDoneEvent= sofa::simulation::SimulationInitDoneEvent;
+    using SimulationInitTexturesDoneEvent= sofa::simulation::SimulationInitTexturesDoneEvent;
     using AnimateEndEvent= sofa::simulation::AnimateEndEvent;
 
     BaseCamera::handleEvent( ev );
@@ -262,7 +269,7 @@ void OffscreenCamera::handleEvent(sofa::core::objectmodel::Event * ev) {
     const auto & save_frame_before_first_step = d_save_frame_before_first_step.getValue();
     const auto & save_frame_after_each_n_steps = d_save_frame_after_each_n_steps.getValue();
 
-    if (SimulationInitDoneEvent::checkEventType(ev) && d_save_frame_before_first_step.getValue()) {
+    if (SimulationInitTexturesDoneEvent::checkEventType(ev) && d_save_frame_before_first_step.getValue()) {
         const auto & filepath = parse_file_path();
         save_frame(filepath);
     } else if (AnimateEndEvent::checkEventType(ev)) {
