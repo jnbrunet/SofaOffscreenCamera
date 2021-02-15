@@ -1,13 +1,6 @@
 <Node dt="1">
-    <RequiredPlugin pluginName='SofaOpenglVisual'/>
-    <RequiredPlugin pluginName='SofaBaseMechanics'/>
-    <RequiredPlugin pluginName='SofaSimpleFem'/>
-    <RequiredPlugin pluginName='SofaLoader'/>
-    <RequiredPlugin pluginName='SofaEngine'/>
-    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
-    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
-    <RequiredPlugin pluginName='SofaSparseSolver'/>
-    <RequiredPlugin pluginName='OffscreenCamera'/>
+    <RequiredPlugin pluginName='OffscreenCamera SofaOpenglVisual SofaBaseMechanics SofaSimpleFem SofaLoader
+                                SofaEngine SofaImplicitOdeSolver SofaBoundaryCondition SofaSparseSolver'/>
 
     <VisualStyle displayFlags="showBehavior showVisual"/>
 

@@ -1,14 +1,12 @@
 #!/usr/bin/python3
 import Sofa
 
-required_plugins = [
-    'SofaBaseMechanics', 'SofaBoundaryCondition', 'SofaEngine', 'SofaImplicitOdeSolver',
-    'SofaLoader', 'SofaOpenglVisual', 'SofaSparseSolver', 'SofaSimpleFem', 'OffscreenCamera'
-]
-
 
 def createScene(root):
-    root.addObject('RequiredPlugin', pluginName=required_plugins)
+    root.addObject('RequiredPlugin', pluginName=[
+        'SofaBaseMechanics', 'SofaBoundaryCondition', 'SofaEngine', 'SofaImplicitOdeSolver',
+        'SofaLoader', 'SofaOpenglVisual', 'SofaSparseSolver', 'SofaSimpleFem', 'OffscreenCamera'
+    ])
 
     root.dt = 1
     root.addObject('VisualStyle', displayFlags='showBehavior showVisual')
