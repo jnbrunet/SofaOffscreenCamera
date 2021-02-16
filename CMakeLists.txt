@@ -30,7 +30,7 @@ set(HEADER_FILES
     src/SofaOffscreenCamera/QtDrawToolGL.h
 )
 
-add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
+add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES} ${HEADER_FILES})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Gui SofaBaseVisual)
 target_link_libraries(${PROJECT_NAME} PRIVATE GLEW::GLEW)
