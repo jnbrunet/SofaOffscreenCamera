@@ -5,10 +5,14 @@ project(OffscreenCamera VERSION 20.12 LANGUAGES CXX)
 if ("${CMAKE_PROJECT_NAME}" STREQUAL "Sofa")
     set(COMPILED_AS_SOFA_SUBPROJECT 1)
     message(STATUS "${PROJECT_NAME} is compiled as a subproject to SOFA.")
-elseif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+else()
     set(CMAKE_INSTALL_PREFIX "install")
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 endif ()
 
+find_package(SofaFramework REQUIRED)
 find_package(SofaBase REQUIRED) # Dependency to SofaBaseVisual
 find_package(Qt5 COMPONENTS Gui REQUIRED) # Dependency to Qt5::Gui
 find_package(GLEW QUIET REQUIRED)

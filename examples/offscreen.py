@@ -9,16 +9,16 @@ def createScene(root):
     ])
 
     root.dt = 1
-    root.addObject('VisualStyle', displayFlags='showBehavior showVisual')
     root.addChild('beam')
 
     # Camera
+    root.beam.addObject('VisualStyle', displayFlags='showBehavior showVisual')
     root.beam.addObject('OffscreenCamera',
                         name='camera_beam_and_ball',
                         filepath='%s_%i.png',
                         save_frame_before_first_step=True,
                         save_frame_after_each_n_steps=5,
-                        position=[0, 0, 20], lookAt=[0, 0, 0], zNear=0.01, zFar=100, projectionType=1, printLog=True)
+                        position=[-20, 0, 0], lookAt=[0, 0, 0], zNear=0.01, zFar=100, projectionType=1, printLog=True)
 
     # Solver
     root.beam.addObject('StaticSolver', newton_iterations=10)
@@ -45,6 +45,12 @@ def createScene(root):
     root.beam.ball.addObject('MeshObjLoader', name='loader', filename='mesh/ball.obj', translation=[0, 0, 9])
     root.beam.ball.addObject('OglModel', src='@loader', color='red')
     root.beam.ball.addObject('BarycentricMapping')
+    root.beam.ball.addObject('OffscreenCamera',
+                             name='camera_only_ball',
+                             filepath='%s_%i.png',
+                             save_frame_before_first_step=True,
+                             save_frame_after_each_n_steps=5,
+                             position=[-20, 0, 0], lookAt=[0, 0, 0], zNear=0.01, zFar=100, projectionType=1, printLog=True)
 
 
 if __name__ == "__main__":

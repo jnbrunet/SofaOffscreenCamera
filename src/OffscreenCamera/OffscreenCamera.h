@@ -46,6 +46,7 @@ private:
     Data<unsigned int> d_save_frame_after_each_n_steps;
 
     // Private members
+    bool p_textures_have_been_initialized = false;
     unsigned int p_step_number = 0;
     std::unique_ptr<QGuiApplication> p_application;
     QOffscreenSurface * p_surface{};
