@@ -4,7 +4,7 @@
 
     <VisualStyle displayFlags="showBehavior showVisual"/>
 
-    <Node name="Beam">
+    <Node name="beam">
         <VisualStyle displayFlags="showBehavior"/>
 
         <StaticSolver newton_iterations="10" />
@@ -19,7 +19,7 @@
         <FixedConstraint indices="@fixed_face.indices" />
 
         <BoxROI box="-2 -2 9.9 2 2 10.1" drawBoxes="true" name="traction_face"/>
-        <LinearForceField points="@traction_face.indices" times="0 4" forces="0 -1 0 0 -10 0" />
+        <LinearForceField name="traction" points="@traction_face.indices" times="0 4 8" forces="0 -1 0 0 -10 0 0 0 0" />
 
         <OffscreenCamera
                 name="beam_and_ball"
@@ -28,7 +28,7 @@
                 save_frame_after_each_n_steps="5"
                 position="-20 0 0" lookAt="0 0 0" zNear="0.01" zFar="100" projectionType="1"/>
 
-        <Node name="Ball">
+        <Node name="ball">
             <OffscreenCamera
                     name="only_ball"
                     filepath="camera_%s_%i.png"

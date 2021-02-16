@@ -10,17 +10,23 @@ Here is a quick example.
     name="beam_and_ball"  
     filepath="camera_%s_%i.png" 
     save_frame_before_first_step="true" 
-    save_frame_after_each_n_steps="5" 
+    save_frame_after_each_n_steps="5"
+    multisampling="4"
+    widthViewport="800"
+    heightViewport="600"
     position="-20 0 0" lookAt="0 0 0" zNear="0.01" zFar="100" projectionType="1"/>
 ```
+
+The `multisampling` data argument is an anti-aliasing parameter that will set the number of 
+sampling points per pixel. Power of two should be used.
 
 The `filepath` data argument will replace `%s` and `%i` for the component
 name and step number, respectively. In this example, a screenshot will be taken just before
 the simulation starts, and then at the end of every 5 steps. Hence, for a simulation of 10 steps,
-the following files will be created:
+the following _800x600_ images will be created:
 1. camera_beam_and_ball_0.png
 2. camera_beam_and_ball_5.png
-2. camera_beam_and_ball_10.png
+3. camera_beam_and_ball_10.png
 
 Offscreen camera should only render the component within their context tree. Hence, in the
 following example, the first camera will take a screenshot containing both the beam and the

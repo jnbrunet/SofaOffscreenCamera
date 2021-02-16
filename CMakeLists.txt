@@ -46,3 +46,9 @@ sofa_create_package_with_targets(
     EXAMPLE_INSTALL_DIR "share/examples"
     RELOCATABLE "plugins"
 )
+
+find_package(pybind11 QUIET) # This is needed to get the latest installed version of python
+find_package(SofaPython3 QUIET)
+if (SofaPython3_FOUND)
+    add_subdirectory(bindings)
+endif()
