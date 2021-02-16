@@ -26,7 +26,8 @@ public:
     QImage grab_frame();
 
     /**
-     * Render the current frame and save it into a file.
+     * Render the current frame and save it into a file. Note that if the filepath contains '%s' and '%i', they will
+     * be replaced by the component's name and the current simulation step number, respectively.
      *
      * @param filepath Path to the file where the frame will be saved.
      */
@@ -44,6 +45,7 @@ private:
     Data<std::string> d_filepath;
     Data<bool> d_save_frame_before_first_step;
     Data<unsigned int> d_save_frame_after_each_n_steps;
+    Data<unsigned int> d_multisampling;
 
     // Private members
     bool p_textures_have_been_initialized = false;

@@ -38,6 +38,13 @@ OffscreenCamera::OffscreenCamera()
     "Default to 0",
     true  /*is_displayed_in_gui*/,
     false /*is_read_only*/ ))
+, d_multisampling(initData(&d_multisampling,
+    static_cast<unsigned int> (-1),
+    "multisampling",
+    "The number of samples per pixel when multisampling is enabled, or -1 when multisampling is disabled."
+    "Default to -1",
+    true  /*is_displayed_in_gui*/,
+    false /*is_read_only*/ ))
 {
     if (! QCoreApplication::instance()) {
         // In case we are not inside a Qt application (such as with SofaQt),
@@ -52,9 +59,10 @@ OffscreenCamera::OffscreenCamera()
 void OffscreenCamera::init() {
     const auto & width = p_widthViewport.getValue();
     const auto & height = p_heightViewport.getValue();
+    const auto & samples = d_multisampling.getValue();
 
     QSurfaceFormat format;
-    format.setSamples(1);
+    format.setSamples(samples);
     format.setRenderableType(QSurfaceFormat::OpenGL);
     format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
     format.setProfile(QSurfaceFormat::CompatibilityProfile);
@@ -260,7 +268,6 @@ void OffscreenCamera::initGL() {
 void OffscreenCamera::save_frame(const std::string &filepath) {
     QImage frame = grab_frame();
     frame.save(QString::fromStdString(filepath));
-    msg_info() << "Frame saved at " << filepath;
 }
 
 void OffscreenCamera::handleEvent(sofa::core::objectmodel::Event * ev) {
