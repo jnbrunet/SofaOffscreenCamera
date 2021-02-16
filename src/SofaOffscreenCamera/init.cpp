@@ -12,15 +12,15 @@ const char* getModuleComponentList();
 void initExternalModule() {}
 
 const char* getModuleName() {
-    return "OffscreenCamera";
+    return "SofaOffscreenCamera";
 }
 
 const char* getModuleVersion() {
-    return "1.0";
+    return "20.12";
 }
 
 const char* getModuleLicense() {
-    return "TBD";
+    return "LGPL";
 }
 
 const char* getModuleDescription() {
@@ -29,5 +29,5 @@ const char* getModuleDescription() {
 
 const char* getModuleComponentList() {
     /// string containing the names of the classes provided by the plugin
-    return "";
+    return "OffscreenCamera";
 }

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(OffscreenCamera VERSION 20.12 LANGUAGES CXX)
+project(SofaOffscreenCamera VERSION 20.12 LANGUAGES CXX)
 
 # Detect if this is a subproject of SOFA
 if ("${CMAKE_PROJECT_NAME}" STREQUAL "Sofa")
@@ -18,21 +18,22 @@ find_package(Qt5 COMPONENTS Gui REQUIRED) # Dependency to Qt5::Gui
 find_package(GLEW QUIET REQUIRED)
 
 set(SOURCE_FILES
-    src/OffscreenCamera/init.cpp
-    src/OffscreenCamera/OffscreenCamera.cpp
-    src/OffscreenCamera/GlewProxy.cpp
-    src/OffscreenCamera/QtDrawToolGL.cpp
+    src/SofaOffscreenCamera/init.cpp
+    src/SofaOffscreenCamera/OffscreenCamera.cpp
+    src/SofaOffscreenCamera/GlewProxy.cpp
+    src/SofaOffscreenCamera/QtDrawToolGL.cpp
 )
 
 set(HEADER_FILES
-    src/OffscreenCamera/OffscreenCamera.h
-    src/OffscreenCamera/GlewProxy.h
-    src/OffscreenCamera/QtDrawToolGL.h
+    src/SofaOffscreenCamera/OffscreenCamera.h
+    src/SofaOffscreenCamera/GlewProxy.h
+    src/SofaOffscreenCamera/QtDrawToolGL.h
 )
 
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
 
-target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Gui SofaBaseVisual GLEW::GLEW)
+target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Gui SofaBaseVisual)
+target_link_libraries(${PROJECT_NAME} PRIVATE GLEW::GLEW)
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 
 # Create package Config, Version & Target files.

@@ -1,5 +1,5 @@
 <Node dt="1">
-    <RequiredPlugin pluginName='OffscreenCamera SofaOpenglVisual SofaBaseMechanics SofaSimpleFem SofaLoader
+    <RequiredPlugin pluginName='SofaOffscreenCamera SofaOpenglVisual SofaBaseMechanics SofaSimpleFem SofaLoader
                                 SofaEngine SofaImplicitOdeSolver SofaBoundaryCondition SofaSparseSolver'/>
 
     <VisualStyle displayFlags="showBehavior showVisual"/>
@@ -21,10 +21,20 @@
         <BoxROI box="-2 -2 9.9 2 2 10.1" drawBoxes="true" name="traction_face"/>
         <LinearForceField points="@traction_face.indices" times="0 4" forces="0 -1 0 0 -10 0" />
 
-        <OffscreenCamera name="beam_and_ball"  filepath="camera_%s_%i.png" save_frame_before_first_step="true" save_frame_after_each_n_steps="5" position="-20 0 0" lookAt="0 0 0" zNear="0.01" zFar="100" projectionType="1"/>
+        <OffscreenCamera
+                name="beam_and_ball"
+                filepath="camera_%s_%i.png"
+                save_frame_before_first_step="true"
+                save_frame_after_each_n_steps="5"
+                position="-20 0 0" lookAt="0 0 0" zNear="0.01" zFar="100" projectionType="1"/>
 
         <Node name="Ball">
-            <OffscreenCamera name="only_ball"  filepath="camera_%s_%i.png" save_frame_before_first_step="true" save_frame_after_each_n_steps="5" position="-20 0 0" lookAt="0 0 0" zNear="0.01" zFar="100" projectionType="1"/>
+            <OffscreenCamera
+                    name="only_ball"
+                    filepath="camera_%s_%i.png"
+                    save_frame_before_first_step="true"
+                    save_frame_after_each_n_steps="5"
+                    position="-20 0 0" lookAt="0 0 0" zNear="0.01" zFar="100" projectionType="1"/>
             <MeshObjLoader name='loader' filename='mesh/ball.obj' translation="0 0 9" />
             <OglModel src='@loader' color='red'/>
             <BarycentricMapping />

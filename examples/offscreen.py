@@ -5,7 +5,7 @@ import Sofa
 def createScene(root):
     root.addObject('RequiredPlugin', pluginName=[
         'SofaBaseMechanics', 'SofaBoundaryCondition', 'SofaEngine', 'SofaImplicitOdeSolver',
-        'SofaLoader', 'SofaOpenglVisual', 'SofaSparseSolver', 'SofaSimpleFem', 'OffscreenCamera'
+        'SofaLoader', 'SofaOpenglVisual', 'SofaSparseSolver', 'SofaSimpleFem', 'SofaOffscreenCamera'
     ])
 
     root.dt = 1
