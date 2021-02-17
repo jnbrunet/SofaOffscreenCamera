@@ -1,5 +1,7 @@
 # SofaOffscreenCamera plugin
 
+**Contact**: Jean-Nicolas Brunet (jnbrunet2000@gmail.com)
+
 This SOFA plugin brings an offscreen camera that is able to take screenshot with or without GUI.
 Multiple offscreen cameras can be added to a single simulation scene, and take screenshots from
 different angles at the same time. 
