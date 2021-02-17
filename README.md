@@ -58,12 +58,39 @@ the same point of view, but this is not restricted.
   <img alt="only ball" src="https://user-images.githubusercontent.com/6951981/108220006-919b9f80-7136-11eb-9b15-6e531f874472.png" width="49%">
 </div>
 
+### Scripting with python
+
 Python bindings are also availabe. Hence, from a python script, you can manually call
-`OffscreenCamera::save_frame(filepath)`. The file **examples/rotating_camera.py** contains
+`OffscreenCamera::save_frame(filepath)`. The `position` and `lookAt` data attributes
+can be dynamically changed at any time from the script to move around the camera.
+In the following example, a set of predefined positions is given to the camera at each
+time step. A screenshot is also rendered every time.
+```python
+camera_positions = get_camera_positions()
+camera = root.beam.camera
+for i in range(n_frames):
+        Sofa.Simulation.animate(root, 1)
+        Sofa.Simulation.updateVisual(root)
+        
+        # Move the camera to the next position
+        with camera.position.writeableArray() as wa:
+            wa[0:3] = camera_positions[i+1]
+
+        # Save screenshot at time i+1
+        camera.save_frame(f'frame_{i+1}.jpg')
+```
+Note that this example could be rendered into an mp4 video using, for example, ffmpeg:
+```shell
+ffmpeg -framerate 60 -i 'frame_%d.jpg' -c:v libx264 -vf fps=30 -pix_fmt yuv420p simulation.mp4
+```
+Here, the input frame per second is set to 60, and the output to 30, which means that the video
+will last 2 times the simulation time.
+
+The file **examples/rotating_camera.py** contains
 an example where two cameras are moved in an ellipse around the bending beam. The frames of
 both cameras are manually render into the "only_ball" and "beam_and_ball" directories,
 respectively. The python script also dynamically change the position of the camera after each
-simulation steps. The following result were computed by running the **examples/rotating_camera.py**
+simulation steps. The following result was computed by running the **examples/rotating_camera.py**
 file on an headless (no GUI available) server.
 
 
