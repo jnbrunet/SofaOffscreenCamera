@@ -6,6 +6,7 @@
 #include <utility>
 
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/SolidTypes.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/VisualVisitor.h>
@@ -121,6 +122,7 @@ void OffscreenCamera::init() {
 }
 
 QImage OffscreenCamera::grab_frame() {
+    using Transform = sofa::defaulttype::SolidTypes<SReal>::Transform;
     if (! p_framebuffer) {
         throw std::runtime_error("Framebuffer hasn't been created. Have you run the "
                                  "init() method of the OffscreenCamera component?");
@@ -153,10 +155,19 @@ QImage OffscreenCamera::grab_frame() {
     glLoadIdentity();
     glMultMatrixd(projectionMatrix);
 
+    // We recompute the MVM since sofa doesn't do it unless the "look-at" changed. Hence,
+    // in the case the camera position moved, but not the "look-at", the orientation will
+    // be wrong.
+    const auto currentPos = p_position.getValue();
+    currentLookAt = p_lookAt.getValue();
+    auto currentOrientation = getOrientationFromLookAt(currentPos, currentLookAt);
+    auto world_to_cam = Transform(currentPos, currentOrientation);
+    p_orientation.setValue(currentOrientation);
+
     GLdouble modelViewMatrix[16];
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    getOpenGLModelViewMatrix(modelViewMatrix);
+    world_to_cam.inversed().writeOpenGlMatrix(modelViewMatrix);
     glMultMatrixd(modelViewMatrix);
 
     sofa::core::visual::VisualParams visual_parameters;

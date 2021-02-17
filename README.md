@@ -2,7 +2,7 @@
 
 This SOFA plugin brings an offscreen camera that is able to take screenshot with or without GUI.
 Multiple offscreen cameras can be added to a single simulation scene, and take screenshots from
-different angles. 
+different angles at the same time. 
 
 Here is a quick example. 
 ```xml
@@ -56,4 +56,18 @@ the same point of view, but this is not restricted.
 <div align="center">
   <img alt="beam and ball" src="https://user-images.githubusercontent.com/6951981/108219783-55683f00-7136-11eb-8ab9-6d288b6ea45b.png" width="49%">
   <img alt="only ball" src="https://user-images.githubusercontent.com/6951981/108220006-919b9f80-7136-11eb-9b15-6e531f874472.png" width="49%">
+</div>
+
+Python bindings are also availabe. Hence, from a python script, you can manually call
+`OffscreenCamera::save_frame(filepath)`. The file **examples/rotating_camera.py** contains
+an example where two cameras are moved in an ellipse around the bending beam. The frames of
+both cameras are manually render into the "only_ball" and "beam_and_ball" directories,
+respectively. The python script also dynamically change the position of the camera after each
+simulation steps. The following result were computed by running the **examples/rotating_camera.py**
+file on an headless (no GUI available) server.
+
+
+<div align="center">
+  <img alt="beam and ball" src="https://user-images.githubusercontent.com/6951981/108218000-83e51a80-7134-11eb-9cea-a5fd6addcdf9.gif" width="49%">
+  <img alt="only ball" src="https://user-images.githubusercontent.com/6951981/108218421-ec33fc00-7134-11eb-8f94-84fde6a1894e.gif" width="49%">
 </div>

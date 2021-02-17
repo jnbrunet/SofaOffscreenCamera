@@ -18,7 +18,7 @@ def createScene(root):
                         filepath='%s_%i.png',
                         save_frame_before_first_step=True,
                         save_frame_after_each_n_steps=5,
-                        position=[-20, 0, 0], lookAt=[0, 0, 0], zNear=0.01, zFar=100, projectionType=1, printLog=True)
+                        position=[-20, 0, 0], lookAt=[0, 0, 0], zNear=0.01, zFar=200, computeZClip=False, projectionType=1)
 
     # Solver
     root.beam.addObject('StaticSolver', newton_iterations=10)
@@ -30,7 +30,7 @@ def createScene(root):
 
     # Mechanical
     root.beam.addObject('MechanicalObject', name='mo', src='@grid')
-    root.beam.addObject('HexahedronFEMForceField', poissonRatio=0.45, youngModulus=5000)
+    root.beam.addObject('HexahedronFEMForceField', poissonRatio=0, youngModulus=5000, method='large')
 
     # Fixed boundary
     root.beam.addObject('BoxROI', box=[-2, -2, -10.1, 2, 2, -9.9], drawBoxes=True, name='fixed_face')
@@ -38,7 +38,7 @@ def createScene(root):
 
     # Traction boundary
     root.beam.addObject('BoxROI', box=[-2, -2, 9.9, 2, 2, 10.1], name='traction_face')
-    root.beam.addObject('LinearForceField', points='@traction_face.indices', times=[0, 4], forces=[0, -1, 0, 0, -10, 0])
+    root.beam.addObject('LinearForceField', points='@traction_face.indices', times=[0, 4], forces=[0, -1, 0, 0, -25, 0])
 
     # Immersed ball
     root.beam.addChild('ball')
@@ -50,7 +50,7 @@ def createScene(root):
                              filepath='%s_%i.png',
                              save_frame_before_first_step=True,
                              save_frame_after_each_n_steps=5,
-                             position=[-20, 0, 0], lookAt=[0, 0, 0], zNear=0.01, zFar=100, projectionType=1, printLog=True)
+                             position=[-20, 0, 0], lookAt=[0, 0, 0], zNear=0.01, zFar=200, computeZClip=False, projectionType=1)
 
 
 if __name__ == "__main__":
