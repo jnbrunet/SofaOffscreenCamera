@@ -30,6 +30,8 @@ the following _800x600_ images will be created:
 2. camera_beam_and_ball_5.png
 3. camera_beam_and_ball_10.png
 
+**Warning:** The option `save_frame_before_first_step="true"` will not work with a SOFA version v20.12 or less.
+
 Offscreen camera should only render the component within their context tree. Hence, in the
 following example, the first camera will take a screenshot containing both the beam and the
 ball, while the second camera will only see the ball. In this example, both camera capture 

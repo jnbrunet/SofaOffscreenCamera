@@ -11,7 +11,9 @@
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/VisualVisitor.h>
 
+#if (defined(SOFA_VERSION) && SOFA_VERSION > 201200)
 #include <sofa/simulation/events/SimulationInitTexturesDoneEvent.h>
+#endif
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 
@@ -282,7 +284,9 @@ void OffscreenCamera::save_frame(const std::string &filepath) {
 }
 
 void OffscreenCamera::handleEvent(sofa::core::objectmodel::Event * ev) {
+#if (defined(SOFA_VERSION) && SOFA_VERSION > 201200)
     using SimulationInitTexturesDoneEvent= sofa::simulation::SimulationInitTexturesDoneEvent;
+#endif
     using AnimateBeginEvent= sofa::simulation::AnimateBeginEvent;
     using AnimateEndEvent= sofa::simulation::AnimateEndEvent;
 
@@ -291,13 +295,16 @@ void OffscreenCamera::handleEvent(sofa::core::objectmodel::Event * ev) {
     const auto & save_frame_before_first_step = d_save_frame_before_first_step.getValue();
     const auto & save_frame_after_each_n_steps = d_save_frame_after_each_n_steps.getValue();
 
+#if (defined(SOFA_VERSION) && SOFA_VERSION > 201200)
     if (SimulationInitTexturesDoneEvent::checkEventType(ev)) {
         p_textures_have_been_initialized = true;
         if (save_frame_before_first_step) {
             const auto &filepath = parse_file_path();
             save_frame(filepath);
         }
-    } else if (AnimateBeginEvent::checkEventType(ev)) {
+    } else
+#endif
+    if (AnimateBeginEvent::checkEventType(ev)) {
         // This is needed to handle the runSofa's batch "GUI", since it doesn't initialize the OglModel
         if (!p_textures_have_been_initialized) {
             auto * node = dynamic_cast<sofa::simulation::Node*>(getContext());
