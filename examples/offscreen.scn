@@ -25,7 +25,9 @@
                 name="beam_and_ball"
                 filepath="camera_%s_%i.png"
                 save_frame_before_first_step="true"
-                save_frame_after_each_n_steps="0"
+                save_frame_after_each_n_steps="1"
+                widthViewport="800"
+                heightViewport="600"
                 position="-20 0 0" lookAt="0 0 0" zNear="0.01" zFar="200" computeZClip="0" projectionType="1"/>
 
         <Node name="ball">
@@ -33,7 +35,9 @@
                     name="only_ball"
                     filepath="camera_%s_%i.png"
                     save_frame_before_first_step="true"
-                    save_frame_after_each_n_steps="0"
+                    save_frame_after_each_n_steps="1"
+                    widthViewport="1920"
+                    heightViewport="1080"
                     position="-20 0 0" lookAt="0 0 0" zNear="0.01" zFar="200" computeZClip="0" projectionType="1"/>
             <MeshObjLoader name='loader' filename='mesh/ball.obj' translation="0 0 9" />
             <OglModel src='@loader' color='red'/>

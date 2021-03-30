@@ -16,8 +16,10 @@ def createScene(root):
     root.beam.addObject('OffscreenCamera',
                         name='camera_beam_and_ball',
                         filepath='%s_%i.png',
+                        widthViewport=800,
+                        heightViewport=800,
                         save_frame_before_first_step=True,
-                        save_frame_after_each_n_steps=5,
+                        save_frame_after_each_n_steps=1,
                         position=[-20, 0, 0], lookAt=[0, 0, 0], zNear=0.01, zFar=200, computeZClip=False, projectionType=1)
 
     # Solver
@@ -48,8 +50,10 @@ def createScene(root):
     root.beam.ball.addObject('OffscreenCamera',
                              name='camera_only_ball',
                              filepath='%s_%i.png',
+                             widthViewport=1920,
+                             heightViewport=1080,
                              save_frame_before_first_step=True,
-                             save_frame_after_each_n_steps=5,
+                             save_frame_after_each_n_steps=1,
                              position=[-20, 0, 0], lookAt=[0, 0, 0], zNear=0.01, zFar=200, computeZClip=False, projectionType=1)
 
 
