@@ -5,7 +5,10 @@
 #include <memory>
 #include <utility>
 
+#include <sofa/version.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/VisualManager.h>
 #include <sofa/defaulttype/SolidTypes.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
@@ -175,8 +178,9 @@ QImage OffscreenCamera::grab_frame() {
     sofa::core::visual::VisualParams visual_parameters;
     visual_parameters.zNear() = getZNear();
     visual_parameters.zFar() = getZFar();
-    visual_parameters.viewport() = sofa::helper::fixed_array<int, 4> (0, 0, width, height);
+    visual_parameters.viewport() = sofa::type::fixed_array<int, 4> (0, 0, width, height);
     visual_parameters.setProjectionMatrix(projectionMatrix);
+    visual_parameters.setModelViewMatrix(modelViewMatrix);
 
     glEnable(GL_LIGHTING);
     glEnable(GL_DEPTH_TEST);
@@ -187,7 +191,7 @@ QImage OffscreenCamera::grab_frame() {
     auto * node = dynamic_cast<sofa::simulation::Node*>(getContext());
     auto * root = dynamic_cast<sofa::simulation::Node*>(node->getRoot());
 
-    sofa::core::visual::QtDrawToolGL draw_tool;
+    sofa::helper::visual::QtDrawToolGL draw_tool;
     visual_parameters.drawTool() = &draw_tool;
     visual_parameters.setSupported(sofa::core::visual::API_OpenGL);
     visual_parameters.update();

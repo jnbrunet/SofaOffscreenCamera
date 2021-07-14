@@ -1,6 +1,7 @@
+#include <sofa/helper/logging/Messaging.h>
 #include "QtDrawToolGL.h"
 
-namespace sofa::core::visual {
+namespace sofa::helper::visual {
 
 //=========
 // MATERIAL
@@ -947,12 +948,12 @@ void QtDrawToolGL::drawCapsule(const QtDrawToolGL::Vector3 &p1, const QtDrawTool
 }
 
 void QtDrawToolGL::drawCross(const QtDrawToolGL::Vector3 &p, float length, const QtDrawToolGL::RGBAColor &color) {
-    std::vector<sofa::defaulttype::Vector3> bounds;
+    std::vector<sofa::type::Vector3> bounds;
 
     for ( unsigned int i=0 ; i<3 ; i++ )
     {
-        sofa::defaulttype::Vector3 p0 = p;
-        sofa::defaulttype::Vector3 p1 = p;
+        sofa::type::Vector3 p0 = p;
+        sofa::type::Vector3 p1 = p;
 
         p0[i] -= length;
         p1[i] += length;

@@ -1,14 +1,14 @@
 #pragma once
 
-#include <sofa/core/core.h>
-#include <sofa/core/visual/DrawTool.h>
+#include <sofa/core/config.h>
+#include <sofa/helper/visual/DrawTool.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/helper/types/RGBAColor.h>
 
 #include <QOpenGLFunctions>
 #include <sofa/helper/vector.h>
 
-namespace sofa::core::visual {
+namespace sofa::helper::visual {
 class SOFA_CORE_API QtDrawToolGL : public DrawTool {
 public:
     using Base = DrawTool;
@@ -108,19 +108,19 @@ public:
     //========
     // SPHERES
     //========
-    void drawSphere( const Vector3 &p, float radius) override {}
-    void drawSphere(const Vector3 &p, float radius, const RGBAColor &color) override {}
-    void drawSpheres (const std::vector<Vector3> &points, const std::vector<float>& radius, const RGBAColor& color) override {}
-    void drawSpheres (const std::vector<Vector3> &points, float radius, const RGBAColor& color) override {}
-    void drawFakeSpheres(const std::vector<Vector3> &points, const std::vector<float>& radius, const RGBAColor& color) override {}
-    void drawFakeSpheres(const std::vector<Vector3> &points, float radius, const RGBAColor& color) override {}
+    void drawSphere( const Vector3 & /*p*/, float /*radius*/) override {}
+    void drawSphere(const Vector3 & /*p*/, float /*radius*/, const RGBAColor & /*color*/) override {}
+    void drawSpheres (const std::vector<Vector3> & /*points*/, const std::vector<float>& /*radius*/, const RGBAColor& /*color*/) override {}
+    void drawSpheres (const std::vector<Vector3> & /*points*/, float /*radius*/, const RGBAColor& /*color*/) override {}
+    void drawFakeSpheres(const std::vector<Vector3> &/*points*/, const std::vector<float>& /*radius*/, const RGBAColor& /*color*/) override {}
+    void drawFakeSpheres(const std::vector<Vector3> &/*points*/, float /*radius*/, const RGBAColor& /*color*/) override {}
 
     //=======
     // ARROWS
     //=======
-    void drawArrow   (const Vector3& p1, const Vector3 &p2, float radius, const RGBAColor& color,  int subd=16) override {}
-    void drawArrow   (const Vector3& p1, const Vector3 &p2, float radius, float coneLength, const RGBAColor& color,  int subd=16) override {}
-    void drawArrow   (const Vector3& p1, const Vector3 &p2, float radius, float coneLength, float coneRadius, const RGBAColor& color,  int subd=16) override {}
+    void drawArrow   (const Vector3& /*p1*/, const Vector3 &/*p2*/, float /*radius*/, const RGBAColor& /*color*/,  int /*subd=16*/) override {}
+    void drawArrow   (const Vector3& /*p1*/, const Vector3 &/*p2*/, float /*radius*/, float /*coneLength*/, const RGBAColor& /*color*/,  int/* subd=16*/) override {}
+    void drawArrow   (const Vector3& /*p1*/, const Vector3 &/*p2*/, float /*radius*/, float /*coneLength*/, float /*coneRadius*/, const RGBAColor& /*color*/,  int /*subd=16*/) override {}
 
 
     //==============
@@ -128,19 +128,19 @@ public:
     //==============
     void drawDisk(float radius, double from, double to, int resolution, const RGBAColor& color) override;
     void drawCircle(float radius, float lineThickness, int resolution, const RGBAColor& color) override;
-    void drawFrame(const Vector3& position, const Quaternion &orientation, const Vec3f &size) override {}
-    void drawFrame(const Vector3& position, const Quaternion &orientation, const Vec3f &size, const RGBAColor &color) override {}
+    void drawFrame(const Vector3& /*position*/, const Quaternion &/*orientation*/, const Vec3f &/*size*/) override {}
+    void drawFrame(const Vector3& /*position*/, const Quaternion &/*orientation*/, const Vec3f &/*size*/, const RGBAColor &/*color*/) override {}
     void drawCone    (const Vector3& p1, const Vector3 &p2, float radius1, float radius2, const RGBAColor& color, int subd) override;
     void drawCube    (const float& radius, const RGBAColor& color, const int& subd) override;
     void drawCylinder(const Vector3& p1, const Vector3 &p2, float radius, const RGBAColor& color,  int subd) override;
     void drawCapsule(const Vector3& p1, const Vector3 &p2, float radius, const RGBAColor& color,  int subd) override;
     void drawCross(const Vector3&p, float length, const RGBAColor& color) override;
     void drawPlus    (const float& radius, const RGBAColor& color, const int& subd) override;
-    void drawEllipsoid(const Vector3 &p, const Vector3 &radii) override {}
+    void drawEllipsoid(const Vector3 &/*p*/, const Vector3 &/*radii*/) override {}
     void drawBoundingBox( const Vector3 &min, const Vector3 &max, float size) override;
-    void draw3DText(const Vector3 &p, float scale, const RGBAColor &color, const char* text) override {}
-    void draw3DText_Indices(const std::vector<Vector3> &positions, float scale, const RGBAColor &color) override {}
-    void writeOverlayText( int x, int y, unsigned fontSize, const RGBAColor &color, const char* text ) override {}
+    void draw3DText(const Vector3 &/*p*/, float /*scale*/, const RGBAColor &/*color*/, const char* /*text*/) override {}
+    void draw3DText_Indices(const std::vector<Vector3> &/*positions*/, float /*scale*/, const RGBAColor &/*color*/) override {}
+    void writeOverlayText( int /*x*/, int /*y*/, unsigned /*fontSize*/, const RGBAColor &/*color*/, const char* /*text*/ ) override {}
 
 
     void clear() override {}

@@ -22,3 +22,11 @@ SP3_add_python_module (
     HEADERS      ${HEADER_FILES}
     DEPENDS      SofaOffscreenCamera SofaPython3::Bindings
 )
+message(STATUS "Python support:
+    Version: ${Python_VERSION}
+    Executable: ${Python_EXECUTABLE}
+    Headers: ${Python_INCLUDE_DIRS}
+    Libraries: ${Python_LIBRARIES}
+    pybind11 version: ${pybind11_VERSION}
+    pybind11 config: ${pybind11_CONFIG}"
+)
