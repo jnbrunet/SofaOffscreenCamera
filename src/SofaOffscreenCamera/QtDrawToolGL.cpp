@@ -644,6 +644,26 @@ void QtDrawToolGL::drawScaledTetrahedra(const std::vector<Vector3> &points, cons
     resetMaterial(color);
 }
 
+void QtDrawToolGL::drawScaledTetrahedron(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, const RGBAColor& color, const float scale)
+{
+    setMaterial(color);
+    glBegin(GL_TRIANGLES);
+    {
+        Vector3 center = (p0 + p1 + p2 + p3) / 4.0;
+
+        Vector3 np0 = ((p0 - center) * scale) + center;
+        Vector3 np1 = ((p1 - center) * scale) + center;
+        Vector3 np2 = ((p2 - center) * scale) + center;
+        Vector3 np3 = ((p3 - center) * scale) + center;
+
+        internalDrawTriangle(np0, np1, np2, cross((p1 - p0), (p2 - p0)), color);
+        internalDrawTriangle(np0, np1, np3, cross((p1 - p0), (p3 - p0)), color);
+        internalDrawTriangle(np0, np2, np3, cross((p2 - p0), (p3 - p0)), color);
+        internalDrawTriangle(np1, np2, np3, cross((p2 - p1), (p3 - p1)), color);
+    } glEnd();
+    resetMaterial(color);
+}
+
 //============
 // HEXAHEDRONS
 //============

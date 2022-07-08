@@ -2,11 +2,11 @@
 
 #include <sofa/core/config.h>
 #include <sofa/helper/visual/DrawTool.h>
-#include <sofa/defaulttype/Quat.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/Quat.h>
+#include <sofa/type/RGBAColor.h>
 
 #include <QOpenGLFunctions>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 
 namespace sofa::helper::visual {
 class SOFA_CORE_API QtDrawToolGL : public DrawTool {
@@ -95,6 +95,7 @@ public:
     //=============
     void drawTetrahedron(const Vector3 &p0, const Vector3 &p1, const Vector3 &p2, const Vector3 &p3, const RGBAColor &color) override;
     void drawTetrahedra(const std::vector<Vector3> &points, const RGBAColor& color) override;
+    void drawScaledTetrahedron(const Vector3 &p0, const Vector3 &p1, const Vector3 &p2, const Vector3 &p3, const RGBAColor &color, const float scale) override;
     void drawScaledTetrahedra(const std::vector<Vector3> &points, const RGBAColor& color, const float scale) override;
 
     //============
