@@ -2,11 +2,11 @@
 
 #include <sofa/core/config.h>
 #include <sofa/helper/visual/DrawTool.h>
-#include <sofa/defaulttype/Quat.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/Quat.h>
+#include <sofa/type/RGBAColor.h>
 
 #include <QOpenGLFunctions>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 
 namespace sofa::helper::visual {
 class SOFA_CORE_API QtDrawToolGL : public DrawTool {
