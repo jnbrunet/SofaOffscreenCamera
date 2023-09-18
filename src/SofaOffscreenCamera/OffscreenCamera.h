@@ -1,3 +1,4 @@
+#include <SofaOffscreenCamera/config.h>
 #include <memory>
 
 #include <QGuiApplication>
@@ -8,7 +9,7 @@
 
 #include <sofa/component/visual/BaseCamera.h>
 
-class OffscreenCamera : public sofa::component::visual::BaseCamera {
+class SOFA_SOFAOFFSCREENCAMERA_API OffscreenCamera : public sofa::component::visual::BaseCamera {
     using Base = sofa::component::visual::BaseCamera;
     template <typename T> using Data = sofa::core::objectmodel::Data<T>;
 

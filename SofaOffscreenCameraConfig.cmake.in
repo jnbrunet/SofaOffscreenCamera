@@ -4,6 +4,8 @@
 find_package(Sofa.Config QUIET REQUIRED)
 find_package(Sofa.Component.Visual QUIET REQUIRED) # Dependency to SofaBaseVisual
 find_package(Qt5 COMPONENTS Gui QUIET REQUIRED) # Dependency to Qt5::Gui
+find_package(OpenGL QUIET REQUIRED)
+find_package(GLEW QUIET REQUIRED)
 
 if(NOT TARGET @PROJECT_NAME@)
 include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")

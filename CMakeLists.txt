@@ -17,8 +17,8 @@ endif ()
 find_package(Sofa.Config REQUIRED)
 find_package(Sofa.Component.Visual REQUIRED)
 find_package(Qt5 COMPONENTS Gui REQUIRED) # Dependency to Qt5::Gui
-find_package(OpenGL QUIET REQUIRED)
-find_package(GLEW QUIET REQUIRED)
+find_package(OpenGL REQUIRED)
+find_package(GLEW REQUIRED)
 
 
 set(SOURCE_FILES
@@ -29,6 +29,7 @@ set(SOURCE_FILES
 )
 
 set(HEADER_FILES
+    src/SofaOffscreenCamera/config.h.in
     src/SofaOffscreenCamera/OffscreenCamera.h
     src/SofaOffscreenCamera/GlewProxy.h
     src/SofaOffscreenCamera/QtDrawToolGL.h
