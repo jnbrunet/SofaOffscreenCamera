@@ -14,7 +14,7 @@ public:
     using Base = DrawTool;
     using RGBAColor = Base::RGBAColor;
     using Vec3f = Base::Vec3f;
-    using Vector3 = Base::Vector3;
+    using Vector3 = Base::Vec3;
     using Vec3i = Base::Vec3i;
     using Vec2i = Base::Vec2i;
     using Quaternion = Base::Quaternion;

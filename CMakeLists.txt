@@ -14,8 +14,8 @@ else()
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 endif ()
 
-find_package(SofaFramework REQUIRED)
-find_package(SofaBase REQUIRED) # Dependency to SofaBaseVisual
+find_package(Sofa.Config REQUIRED)
+find_package(Sofa.Component.Visual REQUIRED)
 find_package(Qt5 COMPONENTS Gui REQUIRED) # Dependency to Qt5::Gui
 find_package(GLEW QUIET REQUIRED)
 
@@ -34,7 +34,7 @@ set(HEADER_FILES
 
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES} ${HEADER_FILES})
 
-target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Gui SofaBaseVisual)
+target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Gui Sofa.Component.Visual)
 target_link_libraries(${PROJECT_NAME} PRIVATE GLEW::GLEW)
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 
