@@ -20,7 +20,7 @@ SP3_add_python_module (
 #    DESTINATION  OffscreenCamera
     SOURCES      ${SOURCE_FILES}
     HEADERS      ${HEADER_FILES}
-    DEPENDS      SofaOffscreenCamera SofaPython3::Bindings
+    DEPENDS      SofaOffscreenCamera SofaPython3::Bindings.Sofa
 )
 message(STATUS "Python support:
     Version: ${Python_VERSION}
