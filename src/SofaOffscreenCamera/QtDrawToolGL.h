@@ -1,6 +1,8 @@
 #pragma once
 
 #include <sofa/core/config.h>
+#include <SofaOffscreenCamera/config.h>
+
 #include <sofa/helper/visual/DrawTool.h>
 #include <sofa/type/Quat.h>
 #include <sofa/type/RGBAColor.h>
@@ -9,12 +11,12 @@
 #include <sofa/type/vector.h>
 
 namespace sofa::helper::visual {
-class SOFA_CORE_API QtDrawToolGL : public DrawTool {
+class SOFA_SOFAOFFSCREENCAMERA_API QtDrawToolGL : public DrawTool {
 public:
     using Base = DrawTool;
     using RGBAColor = Base::RGBAColor;
     using Vec3f = Base::Vec3f;
-    using Vector3 = Base::Vector3;
+    using Vector3 = Base::Vec3;
     using Vec3i = Base::Vec3i;
     using Vec2i = Base::Vec2i;
     using Quaternion = Base::Quaternion;
