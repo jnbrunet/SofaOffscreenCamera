@@ -63,8 +63,8 @@ OffscreenCamera::OffscreenCamera()
 }
 
 void OffscreenCamera::init() {
-    const auto & width = p_widthViewport.getValue();
-    const auto & height = p_heightViewport.getValue();
+    const auto & width = d_widthViewport.getValue();
+    const auto & height = d_heightViewport.getValue();
     const auto & samples = d_multisampling.getValue();
 
     QSurfaceFormat format;
@@ -163,11 +163,11 @@ QImage OffscreenCamera::grab_frame() {
     // We recompute the MVM since sofa doesn't do it unless the "look-at" changed. Hence,
     // in the case the camera position moved, but !the "look-at", the orientation will
     // be wrong.
-    const auto currentPos = p_position.getValue();
-    currentLookAt = p_lookAt.getValue();
+    const auto currentPos = d_position.getValue();
+    currentLookAt = d_lookAt.getValue();
     auto currentOrientation = getOrientationFromLookAt(currentPos, currentLookAt);
     auto world_to_cam = Transform(currentPos, currentOrientation);
-    p_orientation.setValue(currentOrientation);
+    d_orientation.setValue(currentOrientation);
 
     GLdouble modelViewMatrix[16];
     glMatrixMode(GL_MODELVIEW);
@@ -313,7 +313,7 @@ void OffscreenCamera::handleEvent(sofa::core::objectmodel::Event * ev) {
         if (!p_textures_have_been_initialized) {
             auto * node = dynamic_cast<sofa::simulation::Node*>(getContext());
             auto * root = dynamic_cast<sofa::simulation::Node*>(node->getRoot());
-            sofa::simulation::getSimulation()->initTextures(root);
+            sofa::simulation::node::initTextures(root);
         }
     } else if (AnimateEndEvent::checkEventType(ev)) {
         ++p_step_number;

@@ -37,7 +37,8 @@ public:
     // LINES
     //======
     void drawLine(const Vector3 &p1, const Vector3 &p2, const RGBAColor& color) override;
-    void drawInfiniteLine(const Vector3 &point, const Vector3 &direction, const RGBAColor& color) override;
+    void drawInfiniteLine(const Vec3& point, const Vec3& direction, const RGBAColor& color, const bool& vanishing = false);
+    void drawInfiniteLine(const Vec3& point, const Vec3& direction, const float& size, const RGBAColor& color, const bool& vanishing = false);
     void drawLines(const std::vector<Vector3> &points, float size, const RGBAColor& color) override;
     void drawLines(const std::vector<Vector3> &points, float size, const std::vector<RGBAColor>& colors) override;
     void drawLines(const std::vector<Vector3> &points, const std::vector< Vec2i > &index, float size, const RGBAColor& color) override;

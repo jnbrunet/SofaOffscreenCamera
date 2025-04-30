@@ -124,13 +124,24 @@ void QtDrawToolGL::drawLine(const QtDrawToolGL::Vector3 &p1, const QtDrawToolGL:
     glEnd();
 }
 
-void QtDrawToolGL::drawInfiniteLine(const QtDrawToolGL::Vector3 &point, const QtDrawToolGL::Vector3 &direction,
-                                    const QtDrawToolGL::RGBAColor &color) {
+void QtDrawToolGL::drawInfiniteLine(const Vec3& point, const Vec3& direction, const type::RGBAColor& color, const bool& vanishing)
+{
     glBegin(GL_LINES);
-    glColor4f(color[0],color[1],color[2],color[3]);
+
+    glColor4f(color[0], color[1], color[2], color[3]);
     glVertex4d(point[0], point[1], point[2], 1.0);
+    if (vanishing)
+        glColor4f(color[0], color[1], color[2], 0.0f);
     glVertex4d(direction[0], direction[1], direction[2], 0.0);
+
     glEnd();
+}
+
+void QtDrawToolGL::drawInfiniteLine(const Vec3 & point, const Vec3 & direction, const float& size, const type::RGBAColor & color, const bool& vanishing)
+{
+    glLineWidth(size);
+    drawInfiniteLine(point, direction, color, vanishing);
+    glLineWidth(1);
 }
 
 void QtDrawToolGL::drawLines(const std::vector<Vector3> &points, float size, const QtDrawToolGL::RGBAColor &color) {
@@ -247,7 +258,7 @@ void internalDrawTriangle( const QtDrawToolGL::Vector3 &p1, const QtDrawToolGL::
                            const QtDrawToolGL::Vector3 &n, const  QtDrawToolGL::RGBAColor &c)
 {
     glNormal3d(n[0],n[1],n[2]);
-    glColor4fv(c.array());
+    glColor4fv(c.data());
     glVertex3d(p1[0],p1[1],p1[2]);
     glVertex3d(p2[0],p2[1],p2[2]);
     glVertex3d(p3[0],p3[1],p3[2]);
@@ -258,11 +269,11 @@ void internalDrawTriangle(const QtDrawToolGL::Vector3 &p1,const QtDrawToolGL::Ve
                           const QtDrawToolGL::RGBAColor &c1, const QtDrawToolGL::RGBAColor &c2, const QtDrawToolGL::RGBAColor &c3)
 {
     glNormal3d(n[0],n[1],n[2]);
-    glColor4fv(c1.array());
+    glColor4fv(c1.data());
     glVertex3d(p1[0],p1[1],p1[2]);
-    glColor4fv(c2.array());
+    glColor4fv(c2.data());
     glVertex3d(p2[0],p2[1],p2[2]);
-    glColor4fv(c3.array());
+    glColor4fv(c3.data());
     glVertex3d(p3[0],p3[1],p3[2]);
 }
 
@@ -271,15 +282,15 @@ void internalDrawTriangle(const QtDrawToolGL::Vector3 &p1,   const QtDrawToolGL:
                           const QtDrawToolGL::RGBAColor &c1, const QtDrawToolGL::RGBAColor &c2, const QtDrawToolGL::RGBAColor &c3)
 {
     glNormal3d(n1[0],n1[1],n1[2]);
-    glColor4fv(c1.array());
+    glColor4fv(c1.data());
     glVertex3d(p1[0],p1[1],p1[2]);
 
     glNormal3d(n2[0],n2[1],n2[2]);
-    glColor4fv(c2.array());
+    glColor4fv(c2.data());
     glVertex3d(p2[0],p2[1],p2[2]);
 
     glNormal3d(n3[0],n3[1],n3[2]);
-    glColor4fv(c3.array());
+    glColor4fv(c3.data());
     glVertex3d(p3[0],p3[1],p3[2]);
 }
 
@@ -470,7 +481,7 @@ void internalDrawQuad(const QtDrawToolGL::Vector3 &p1,const QtDrawToolGL::Vector
 void internalDrawQuad(const QtDrawToolGL::Vector3 &p1,const QtDrawToolGL::Vector3 &p2,const QtDrawToolGL::Vector3 &p3,const QtDrawToolGL::Vector3 &p4,
                       const QtDrawToolGL::Vector3 &n, const QtDrawToolGL::RGBAColor &c)
 {
-    glColor4fv(c.array());
+    glColor4fv(c.data());
     internalDrawQuad(p1, p2, p3, p4, n);
 }
 
@@ -479,13 +490,13 @@ void internalDrawQuad(const QtDrawToolGL::Vector3 &p1,const QtDrawToolGL::Vector
                       const QtDrawToolGL::RGBAColor &c1, const QtDrawToolGL::RGBAColor &c2, const QtDrawToolGL::RGBAColor &c3, const QtDrawToolGL::RGBAColor &c4)
 {
     glNormal3d(n[0],n[1],n[2]);
-    glColor4fv(c1.array());
+    glColor4fv(c1.data());
     glVertex3d(p1[0],p1[1],p1[2]);
-    glColor4fv(c2.array());
+    glColor4fv(c2.data());
     glVertex3d(p2[0],p2[1],p2[2]);
-    glColor4fv(c3.array());
+    glColor4fv(c3.data());
     glVertex3d(p3[0],p3[1],p3[2]);
-    glColor4fv(c4.array());
+    glColor4fv(c4.data());
     glVertex3d(p4[0],p4[1],p4[2]);
 }
 
@@ -968,12 +979,12 @@ void QtDrawToolGL::drawCapsule(const QtDrawToolGL::Vector3 &p1, const QtDrawTool
 }
 
 void QtDrawToolGL::drawCross(const QtDrawToolGL::Vector3 &p, float length, const QtDrawToolGL::RGBAColor &color) {
-    std::vector<sofa::type::Vector3> bounds;
+    std::vector<sofa::type::Vec3> bounds;
 
     for ( unsigned int i=0 ; i<3 ; i++ )
     {
-        sofa::type::Vector3 p0 = p;
-        sofa::type::Vector3 p1 = p;
+        sofa::type::Vec3 p0 = p;
+        sofa::type::Vec3 p1 = p;
 
         p0[i] -= length;
         p1[i] += length;
