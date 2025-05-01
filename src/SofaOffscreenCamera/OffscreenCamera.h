@@ -1,3 +1,4 @@
+#include <SofaOffscreenCamera/config.h>
 #include <memory>
 
 #include <QGuiApplication>
@@ -6,14 +7,14 @@
 #include <QOffscreenSurface>
 #include <QOpenGLContext>
 
-#include <SofaBaseVisual/BaseCamera.h>
+#include <sofa/component/visual/BaseCamera.h>
 
-class OffscreenCamera : public sofa::component::visualmodel::BaseCamera {
-    using Base = sofa::component::visualmodel::BaseCamera;
+class SOFA_SOFAOFFSCREENCAMERA_API OffscreenCamera : public sofa::component::visual::BaseCamera {
+    using Base = sofa::component::visual::BaseCamera;
     template <typename T> using Data = sofa::core::objectmodel::Data<T>;
 
 public:
-    SOFA_CLASS(OffscreenCamera, sofa::component::visualmodel::BaseCamera);
+    SOFA_CLASS(OffscreenCamera, sofa::component::visual::BaseCamera);
 
     /**
      * Main constructor of the camera

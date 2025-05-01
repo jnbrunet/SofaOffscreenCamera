@@ -14,10 +14,18 @@ else()
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 endif ()
 
-find_package(SofaFramework REQUIRED)
-find_package(SofaBase REQUIRED) # Dependency to SofaBaseVisual
-find_package(Qt5 COMPONENTS Gui REQUIRED) # Dependency to Qt5::Gui
-find_package(GLEW QUIET REQUIRED)
+find_package(Sofa.Config REQUIRED)
+find_package(Sofa.Component.Visual REQUIRED)
+find_package(Qt6 COMPONENTS Gui OpenGL) # Dependency to Qt5::Gui
+if(NOT Qt6Gui_FOUND)
+    find_package(Qt5 COMPONENTS Gui) # Dependency to Qt5::Gui
+    if(NOT Qt5Gui_FOUND)
+        message(FATAL "Qt5 or Qt6 libraries were not found.")
+    endif()
+Endif()
+find_package(OpenGL REQUIRED)
+find_package(GLEW REQUIRED)
+
 
 set(SOURCE_FILES
     src/SofaOffscreenCamera/init.cpp
@@ -27,6 +35,7 @@ set(SOURCE_FILES
 )
 
 set(HEADER_FILES
+    src/SofaOffscreenCamera/config.h.in
     src/SofaOffscreenCamera/OffscreenCamera.h
     src/SofaOffscreenCamera/GlewProxy.h
     src/SofaOffscreenCamera/QtDrawToolGL.h
@@ -34,8 +43,15 @@ set(HEADER_FILES
 
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES} ${HEADER_FILES})
 
-target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Gui SofaBaseVisual)
-target_link_libraries(${PROJECT_NAME} PRIVATE GLEW::GLEW)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Visual)
+if(Qt5Gui_FOUND)
+    target_link_libraries(${PROJECT_NAME} PUBLIC Qt5::Gui)
+endif()
+if(Qt6Gui_FOUND)
+    target_link_libraries(${PROJECT_NAME} PUBLIC Qt::Gui Qt::OpenGL)
+endif()
+
+target_link_libraries(${PROJECT_NAME} PRIVATE OpenGL::GL GLEW::GLEW)
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 
 # Create package Config, Version & Target files.

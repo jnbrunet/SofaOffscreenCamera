@@ -53,7 +53,7 @@ OffscreenCamera::OffscreenCamera()
     false /*is_read_only*/ ))
 {
     if (! QCoreApplication::instance()) {
-        // In case we are not inside a Qt application (such as with SofaQt),
+        // In case we are !inside a Qt application (such as with SofaQt),
         // and a previous OffscreenCamera hasn't created it
         static int argc = 1;
         static char * arg0 = strdup("Offscreen");
@@ -63,8 +63,8 @@ OffscreenCamera::OffscreenCamera()
 }
 
 void OffscreenCamera::init() {
-    const auto & width = p_widthViewport.getValue();
-    const auto & height = p_heightViewport.getValue();
+    const auto & width = d_widthViewport.getValue();
+    const auto & height = d_heightViewport.getValue();
     const auto & samples = d_multisampling.getValue();
 
     QSurfaceFormat format;
@@ -93,7 +93,7 @@ void OffscreenCamera::init() {
         msg_info() << "An OpenGl context already existed. Let's share it.";
     }
 
-    if (not p_context->create()) {
+    if (!p_context->create()) {
         msg_error() << "Failed to create the OpenGL context";
         return;
     }
@@ -102,7 +102,7 @@ void OffscreenCamera::init() {
     Base::init();
     computeZ();
 
-    if (not p_context->makeCurrent(p_surface)) {
+    if (!p_context->makeCurrent(p_surface)) {
         msg_error() << "Failed to swap the surface of OpenGL context.";
         return;
     }
@@ -111,7 +111,7 @@ void OffscreenCamera::init() {
     p_framebuffer = new QOpenGLFramebufferObject(width, height, GL_TEXTURE_2D);
     msg_info() << "Framebuffer created.";
 
-    if (not p_framebuffer->bind()) {
+    if (!p_framebuffer->bind()) {
         msg_error() << "Failed to bind the OpenGL framebuffer.";
     }
 
@@ -139,11 +139,11 @@ QImage OffscreenCamera::grab_frame() {
     }
     auto * previous_context = QOpenGLContext::currentContext();
     auto * previous_surface = previous_context ? previous_context->surface() : nullptr;
-    if (not p_context->makeCurrent(p_surface)) {
+    if (!p_context->makeCurrent(p_surface)) {
         throw std::runtime_error("Failed to swap the surface of OpenGL context.");
     }
 
-    if (not p_framebuffer->bind()) {
+    if (!p_framebuffer->bind()) {
         throw std::runtime_error("Failed to bind the OpenGL framebuffer.");
     }
 
@@ -161,13 +161,13 @@ QImage OffscreenCamera::grab_frame() {
     glMultMatrixd(projectionMatrix);
 
     // We recompute the MVM since sofa doesn't do it unless the "look-at" changed. Hence,
-    // in the case the camera position moved, but not the "look-at", the orientation will
+    // in the case the camera position moved, but !the "look-at", the orientation will
     // be wrong.
-    const auto currentPos = p_position.getValue();
-    currentLookAt = p_lookAt.getValue();
+    const auto currentPos = d_position.getValue();
+    currentLookAt = d_lookAt.getValue();
     auto currentOrientation = getOrientationFromLookAt(currentPos, currentLookAt);
     auto world_to_cam = Transform(currentPos, currentOrientation);
-    p_orientation.setValue(currentOrientation);
+    d_orientation.setValue(currentOrientation);
 
     GLdouble modelViewMatrix[16];
     glMatrixMode(GL_MODELVIEW);
@@ -232,7 +232,7 @@ QImage OffscreenCamera::grab_frame() {
         previous_context->makeCurrent(previous_surface);
     }
 
-    if (not p_framebuffer->release()) {
+    if (!p_framebuffer->release()) {
         throw std::runtime_error("Failed to release the OpenGL framebuffer.");
     }
 
@@ -313,7 +313,7 @@ void OffscreenCamera::handleEvent(sofa::core::objectmodel::Event * ev) {
         if (!p_textures_have_been_initialized) {
             auto * node = dynamic_cast<sofa::simulation::Node*>(getContext());
             auto * root = dynamic_cast<sofa::simulation::Node*>(node->getRoot());
-            sofa::simulation::getSimulation()->initTextures(root);
+            sofa::simulation::node::initTextures(root);
         }
     } else if (AnimateEndEvent::checkEventType(ev)) {
         ++p_step_number;
