@@ -16,15 +16,16 @@ endif ()
 
 find_package(Sofa.Config REQUIRED)
 find_package(Sofa.Component.Visual REQUIRED)
-find_package(Qt6 COMPONENTS Gui OpenGL) # Dependency to Qt5::Gui
-if(NOT Qt6Gui_FOUND)
-    find_package(Qt5 COMPONENTS Gui) # Dependency to Qt5::Gui
-    if(NOT Qt5Gui_FOUND)
-        message(FATAL "Qt5 or Qt6 libraries were not found.")
-    endif()
-Endif()
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
+
+find_package(Qt6 COMPONENTS Gui OpenGL QUIET)
+if(NOT Qt6Gui_FOUND)
+    find_package(Qt5 COMPONENTS OpenGL)
+    if(NOT Qt5Gui_FOUND)
+        message(FATAL_ERROR "Qt5 or Qt6 libraries were not found.")
+    endif()
+Endif()
 
 
 set(SOURCE_FILES
@@ -65,7 +66,6 @@ sofa_create_package_with_targets(
     RELOCATABLE "plugins"
 )
 
-find_package(pybind11 QUIET) # This is needed to get the latest installed version of python
 find_package(SofaPython3 QUIET)
 if (SofaPython3_FOUND)
     add_subdirectory(bindings)
