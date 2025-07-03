@@ -124,24 +124,15 @@ void QtDrawToolGL::drawLine(const QtDrawToolGL::Vector3 &p1, const QtDrawToolGL:
     glEnd();
 }
 
-void QtDrawToolGL::drawInfiniteLine(const Vec3& point, const Vec3& direction, const type::RGBAColor& color, const bool& vanishing)
+void QtDrawToolGL:: drawInfiniteLine(const QtDrawToolGL::Vec3& point, const QtDrawToolGL::Vec3& direction, const QtDrawToolGL::RGBAColor& color)
 {
     glBegin(GL_LINES);
 
     glColor4f(color[0], color[1], color[2], color[3]);
     glVertex4d(point[0], point[1], point[2], 1.0);
-    if (vanishing)
-        glColor4f(color[0], color[1], color[2], 0.0f);
     glVertex4d(direction[0], direction[1], direction[2], 0.0);
 
     glEnd();
-}
-
-void QtDrawToolGL::drawInfiniteLine(const Vec3 & point, const Vec3 & direction, const float& size, const type::RGBAColor & color, const bool& vanishing)
-{
-    glLineWidth(size);
-    drawInfiniteLine(point, direction, color, vanishing);
-    glLineWidth(1);
 }
 
 void QtDrawToolGL::drawLines(const std::vector<Vector3> &points, float size, const QtDrawToolGL::RGBAColor &color) {
